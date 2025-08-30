@@ -1,3 +1,4 @@
+import os
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
@@ -46,4 +47,5 @@ if __name__ == '__main__':
     
     # Опрашиваем сервер Telegram на наличие новых сообщений
     print('Ожидание сообщений...')
+
     app.run_polling(poll_interval=3)
