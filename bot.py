@@ -1,34 +1,37 @@
 import os
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-# ПРЯМОЕ УКАЗАНИЕ ТОКЕНА ДЛЯ ПРОВЕРКИ
 TOKEN = "8243656189:AAHALtgbtUCFYBjc1n3THIsxnFGrqFvDO4k"
 
 print("=" * 50)
-print("ЗАПУСК БОТА")
-print(f"Токен: {TOKEN}")
+print("ЗАПУСК БОТА НА ВЕРСИИ 13.x")
 print("=" * 50)
 
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('✅ Бот запущен и работает!')
+def start_command(update: Update, context: CallbackContext):
+    update.message.reply_text('✅ Бот запущен и работает на версии 13.x!')
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def echo(update: Update, context: CallbackContext):
     user_message = update.message.text
-    await update.message.reply_text(f'Вы сказали: {user_message}')
+    update.message.reply_text(f'Вы сказали: {user_message}')
 
 def main():
     try:
-        app = Application.builder().token(TOKEN).build()
-        app.add_handler(CommandHandler('start', start_command))
-        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+        # СТАРЫЙ СИНТАКСИС v13.x
+        updater = Updater(TOKEN)
+        dispatcher = updater.dispatcher
+        
+        dispatcher.add_handler(CommandHandler("start", start_command))
+        dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
         
         print("Бот успешно запущен...")
-        app.run_polling()
+        updater.start_polling()
+        updater.idle()
         
     except Exception as e:
         print(f"ОШИБКА: {e}")
-        print("Проверьте токен и настройки")
+        import traceback
+        traceback.print_exc()
 
 if __name__ == '__main__':
     main()
